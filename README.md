@@ -1,268 +1,191 @@
-# -plsql_window_functions_-29294-_-kajyojyi-
+# SQL JOINs & Window Functions Project
 
-1. Business Problem
-Business Context
+## 1. Business Problem
 
-This project is based on a regional retail business that sells products to customers located in different regions. The business records customer details, product information, and daily sales transactions.
+### Business Context
+This project is based on a regional retail business that sells products to customers located in different regions. The business maintains data about customers, products, and sales transactions.
 
-Data Challenge
+### Data Challenge
+Although sales data is recorded daily, management lacks clear analytical insights into customer behavior, product performance, and sales trends over time.
 
-Although sales transactions are recorded, management lacks analytical insights into customer purchasing behavior, product performance, and sales trends over time. The available data is not yet structured for decision-making.
+### Expected Outcome
+Use SQL JOINs and Window Functions to generate analytical reports that support better business and decision-making processes.
 
-Expected Outcome
+---
 
-Use SQL JOINs and Window Functions to analyze sales data, identify top-performing products and customers, and support business decisions related to marketing and inventory management.
+## 2. Success Criteria
 
-2. Success Criteria
+1. Identify top-selling products using ranking window functions  
+2. Calculate cumulative sales using aggregate window functions  
+3. Analyze sales changes between periods using navigation functions  
+4. Segment customers into revenue-based groups  
+5. Analyze average sales trends over time  
 
-The analysis aims to achieve the following objectives:
+---
 
-Identify top-selling products using ranking window functions
+## 3. Database Schema Design
 
-Calculate cumulative sales over time
+### Customers
+- customer_id (PK)
+- name
+- region
 
-Analyze sales changes between consecutive periods
+### Products
+- product_id (PK)
+- name
+- category
+- price
 
-Segment customers into revenue-based groups
+### Sales
+- sales_id (PK)
+- customer_id (FK)
+- product_id (FK)
+- sales_date
+- quantity
+- amount
 
-Evaluate average sales trends
+---
 
-3. Database Schema Design
-Tables Overview
-Customers Table
-
-customer_id (Primary Key)
-
-name
-
-region
-
-Products Table
-
-product_id (Primary Key)
-
-name
-
-category
-
-price
-
-Sales Table
-
-sales_id (Primary Key)
-
-customer_id (Foreign Key)
-
-product_id (Foreign Key)
-
-sales_date
-
-quantity
-
-amount
-
-Entity Relationship Diagram (ERD)
-
-📌 ER Diagram
+## 4. Entity Relationship Diagram (ERD)
 
 [ ADD ER DIAGRAM IMAGE HERE ]
 
-4. Part A — SQL JOINs Implementation
-4.1 INNER JOIN
+---
 
-Purpose: Retrieve sales records with valid customers and products.
+## 5. Part A — SQL JOINs
 
-SELECT c.name AS customer_name,
-       p.name AS product_name,
-       s.quantity,
-       s.amount
+### INNER JOIN
+```sql
+SELECT c.name, p.name, s.amount
 FROM sales s
 INNER JOIN customers c ON s.customer_id = c.customer_id
 INNER JOIN products p ON s.product_id = p.product_id;
+```
 
+[ ADD SCREENSHOT HERE ]
 
-📸 Screenshot
+---
 
-[ ADD INNER JOIN RESULT SCREENSHOT HERE ]
-
-
-🧠 Business Interpretation
-This query ensures that only complete and valid sales transactions are analyzed by linking customers, products, and sales records.
-
-4.2 LEFT JOIN
-
-Purpose: Identify customers who have never made a purchase.
-
+### LEFT JOIN
+```sql
 SELECT c.customer_id, c.name
 FROM customers c
 LEFT JOIN sales s ON c.customer_id = s.customer_id
 WHERE s.sales_id IS NULL;
+```
 
+[ ADD SCREENSHOT HERE ]
 
-📸 Screenshot
+---
 
-[ ADD LEFT JOIN RESULT SCREENSHOT HERE ]
-
-
-🧠 Business Interpretation
-This query helps identify inactive customers who may require promotional or engagement strategies.
-
-4.3 RIGHT JOIN
-
-Purpose: Identify products that have never been sold.
-
+### RIGHT JOIN
+```sql
 SELECT p.product_id, p.name
 FROM sales s
 RIGHT JOIN products p ON s.product_id = p.product_id
 WHERE s.sales_id IS NULL;
+```
 
+[ ADD SCREENSHOT HERE ]
 
-📸 Screenshot
+---
 
-[ ADD RIGHT JOIN RESULT SCREENSHOT HERE ]
-
-
-🧠 Business Interpretation
-Products with no sales may indicate low demand or pricing issues.
-
-4.4 FULL OUTER JOIN
-
-Purpose: Show all customers and sales, including unmatched records.
-
+### FULL OUTER JOIN
+```sql
 SELECT c.name, s.sales_id
 FROM customers c
 FULL OUTER JOIN sales s
 ON c.customer_id = s.customer_id;
+```
 
+[ ADD SCREENSHOT HERE ]
 
-📸 Screenshot
+---
 
-[ ADD FULL JOIN RESULT SCREENSHOT HERE ]
-
-
-🧠 Business Interpretation
-This query provides a complete overview of customer participation and missing sales records.
-
-4.5 SELF JOIN
-
-Purpose: Compare customers within the same region.
-
-SELECT a.name AS customer_1,
-       b.name AS customer_2,
-       a.region
+### SELF JOIN
+```sql
+SELECT a.name, b.name, a.region
 FROM customers a
 JOIN customers b
 ON a.region = b.region
 AND a.customer_id <> b.customer_id;
+```
 
+[ ADD SCREENSHOT HERE ]
 
-📸 Screenshot
+---
 
-[ ADD SELF JOIN RESULT SCREENSHOT HERE ]
+## 6. Part B — Window Functions
 
-
-🧠 Business Interpretation
-Allows comparison of customers operating in the same region.
-
-5. Part B — SQL Window Functions
-5.1 Ranking Function
-
-Top products by total sales amount
-
+### Ranking Function
+```sql
 SELECT p.name,
        SUM(s.amount) AS total_sales,
-       RANK() OVER (ORDER BY SUM(s.amount) DESC) AS sales_rank
+       RANK() OVER (ORDER BY SUM(s.amount) DESC) AS rank
 FROM sales s
 JOIN products p ON s.product_id = p.product_id
 GROUP BY p.name;
+```
 
+[ ADD SCREENSHOT HERE ]
 
-📸 Screenshot
+---
 
-[ ADD RANK FUNCTION SCREENSHOT HERE ]
-
-
-🧠 Interpretation
-Ranks products based on their contribution to total revenue.
-
-5.2 Aggregate Window Function
-
-Running total of sales
-
+### Aggregate Function
+```sql
 SELECT sales_date,
        amount,
-       SUM(amount) OVER (
-           ORDER BY sales_date
-           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-       ) AS running_total
+       SUM(amount) OVER (ORDER BY sales_date) AS running_total
 FROM sales;
+```
 
+[ ADD SCREENSHOT HERE ]
 
-📸 Screenshot
+---
 
-[ ADD RUNNING TOTAL SCREENSHOT HERE ]
-
-
-🧠 Interpretation
-Displays how total sales accumulate over time.
-
-5.3 Navigation Function
-
-Compare current sales with previous sales
-
+### Navigation Function
+```sql
 SELECT sales_date,
        amount,
-       amount - LAG(amount) OVER (ORDER BY sales_date) AS sales_difference
+       amount - LAG(amount) OVER (ORDER BY sales_date) AS difference
 FROM sales;
+```
 
+[ ADD SCREENSHOT HERE ]
 
-📸 Screenshot
+---
 
-[ ADD LAG FUNCTION SCREENSHOT HERE ]
-
-
-🧠 Interpretation
-Highlights increases or decreases between consecutive sales periods.
-
-5.4 Distribution Function
-
-Customer revenue segmentation
-
+### Distribution Function
+```sql
 SELECT customer_id,
-       NTILE(4) OVER (ORDER BY SUM(amount) DESC) AS revenue_quartile
+       NTILE(4) OVER (ORDER BY SUM(amount) DESC) AS quartile
 FROM sales
 GROUP BY customer_id;
+```
 
+[ ADD SCREENSHOT HERE ]
 
-📸 Screenshot
+---
 
-[ ADD NTILE FUNCTION SCREENSHOT HERE ]
+## 7. Results Analysis
 
+### Descriptive
+Sales performance varies across customers and products.
 
-🧠 Interpretation
-Segments customers into four groups based on total revenue.
+### Diagnostic
+High revenue is generated by a small number of customers and products.
 
-6. Results Analysis
-Descriptive Analysis
+### Prescriptive
+Focus on customer retention and product performance improvements.
 
-The analysis shows variations in sales performance across products and customers.
+---
 
-Diagnostic Analysis
+## 8. References
+- Oracle SQL Documentation
+- PostgreSQL Documentation
 
-Higher revenue is driven by a small number of customers and products.
+---
 
-Prescriptive Analysis
+## 9. Integrity Statement
 
-The business should focus on retaining high-value customers and improving low-performing products.
-
-7. References
-
-Oracle SQL Documentation
-
-PostgreSQL Window Functions Documentation
-
-Database Systems Course Notes
-
-8. Integrity Statement
-
-“All sources were properly cited. The analysis and SQL implementations represent original academic work.”
+“All sources were properly cited. This work represents original academic effort.”
