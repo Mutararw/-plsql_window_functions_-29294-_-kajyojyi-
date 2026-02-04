@@ -1,6 +1,5 @@
 # -plsql_window_functions_-29294-_-kajyojyi-
 
-
 1. Business Problem
 Business Context
 
