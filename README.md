@@ -25,24 +25,8 @@ Use SQL JOINs and Window Functions to generate analytical reports that support b
 
 ## 3. Database Schema Design
 
-### Customers
-- customer_id (PK)
-- name
-- region
+The database for this project contains three related tables: **Customers**, **Products**, and **Sales**, designed to support sales analysis using SQL JOINs and window functions. The **Customers** table stores customer identity and region information, while the **Products** table stores product details such as category and price. The **Sales** table records transactions and connects customers and products using foreign keys. Primary keys uniquely identify records in each table, and foreign keys maintain relationships between tables. This relational structure allows efficient querying, reporting, and business analysis.
 
-### Products
-- product_id (PK)
-- name
-- category
-- price
-
-### Sales
-- sales_id (PK)
-- customer_id (FK)
-- product_id (FK)
-- sales_date
-- quantity
-- amount
 
 ---
 
