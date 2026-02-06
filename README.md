@@ -46,6 +46,7 @@ INNER JOIN customers c ON s.customer_id = c.customer_id
 INNER JOIN products p ON s.product_id = p.product_id;
 ```
 
+### inner join screenshot
 ![INNER JOIN](public/inner_join.png)
 
 ---
@@ -58,6 +59,7 @@ LEFT JOIN sales s ON c.customer_id = s.customer_id
 WHERE s.sales_id IS NULL;
 ```
 
+### left join screenshot
 ![left JOIN](public/left_join.png)
 
 ---
@@ -70,6 +72,7 @@ RIGHT JOIN products p ON s.product_id = p.product_id
 WHERE s.sales_id IS NULL;
 ```
 
+### right join screenshot
 ![right JOIN](public/right_join.png)
 
 ---
@@ -82,6 +85,7 @@ FULL OUTER JOIN sales s
 ON c.customer_id = s.customer_id;
 ```
 
+### full outer screenshot
 ![full outer JOIN](public/full_outer_join.png)
 
 ---
@@ -95,6 +99,7 @@ ON a.region = b.region
 AND a.customer_id <> b.customer_id;
 ```
 
+### self join screenshot
 ![self JOIN](public/self_join.png)
 
 ---
@@ -111,6 +116,7 @@ JOIN products p ON s.product_id = p.product_id
 GROUP BY p.name;
 ```
 
+### ranking function screenshot
 ![ranking function](public/rank_function.png)
 
 ---
@@ -123,6 +129,7 @@ SELECT sales_date,
 FROM sales;
 ```
 
+### aggregate function screenshot
 ![aggregate function](public/aggregate_function.png)
 
 ---
@@ -135,6 +142,7 @@ SELECT sales_date,
 FROM sales;
 ```
 
+### navigation function screenshot
 ![navigation function](public/navigation_function.png)
 
 ---
@@ -147,6 +155,7 @@ FROM sales
 GROUP BY customer_id;
 ```
 
+### distribution screenshot
 ![distribution function](public/distribution_function.png)
 
 ---
