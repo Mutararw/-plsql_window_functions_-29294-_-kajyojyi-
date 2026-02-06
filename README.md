@@ -32,7 +32,7 @@ The database for this project contains three related tables: **Customers**, **Pr
 
 ## 4. Entity Relationship Diagram (ERD)
 
-![diagram](public/diagram.png)
+![diagram](public/diagrams.png)
 
 ---
 
