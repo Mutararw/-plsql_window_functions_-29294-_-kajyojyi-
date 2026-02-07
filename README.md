@@ -1,31 +1,33 @@
 # SQL JOINs & Window Functions Project
-
-## 1. Business Problem
+## 1. Problem Definition
 
 ### Business Context
-This project is based on a regional retail business that sells products to customers located in different regions. The business maintains data about customers, products, and sales transactions.
+This project is based on a small retail business that sells products to customers in different regions. The company stores customer, product, and sales transaction data in a database.
 
 ### Data Challenge
-Although sales data is recorded daily, management lacks clear analytical insights into customer behavior, product performance, and sales trends over time.
+Although sales data is recorded daily, management does not have clear reports showing which products sell the most or which customers contribute the most revenue. It is also difficult to track how sales change over time.
 
 ### Expected Outcome
-Use SQL JOINs and Window Functions to generate analytical reports that support better business and decision-making processes.
+The analysis should help identify top selling products, understand customer purchasing behavior, and track sales trends to support better business decisions.
 
----
 
 ## 2. Success Criteria
 
-1. Identify top-selling products using ranking window functions  
-2. Calculate cumulative sales using aggregate window functions  
-3. Analyze sales changes between periods using navigation functions  
-4. Segment customers into revenue-based groups  
-5. Analyze average sales trends over time  
+1. Identify top-selling products using **RANK()**
+2. Calculate cumulative sales totals using **SUM() OVER()**
+3. Analyze sales changes between transactions using **LAG()**
+4. Segment customers into revenue groups using **NTILE(4)**
+5. Calculate moving average sales using **AVG() OVER()**
+
 
 ---
 
 ## 3. Database Schema Design
 
-The database for this project contains three related tables: **Customers**, **Products**, and **Sales**, designed to support sales analysis using SQL JOINs and window functions. The **Customers** table stores customer identity and region information, while the **Products** table stores product details such as category and price. The **Sales** table records transactions and connects customers and products using foreign keys. Primary keys uniquely identify records in each table, and foreign keys maintain relationships between tables. This relational structure allows efficient querying, reporting, and business analysis.
+For this project, I designed a relational database made up of three related tables: **customers**, **products**, and **sales**. The **customers** table stores customer information such as name and region, while the **products** table stores product details like category and price. The **sales** table records transactions and connects customers with the products they purchase.
+
+Each table contains a **primary key** to uniquely identify records. The **sales** table includes **foreign keys** (`customer_id` and `product_id`) that reference the **customers** and **products** tables. These relationships ensure data integrity and allow the use of SQL JOIN operations for analysis. The schema structure supports reporting, sales tracking, and window function queries used in this project.
+
 
 
 ---
@@ -159,17 +161,29 @@ GROUP BY customer_id;
 ![distribution function](public/distribution_function.png)
 
 ---
+### Moving Average (AVG OVER)
+```sql
+SELECT sales_date,
+       amount,
+       AVG(amount) OVER (
+           ORDER BY sales_date
+           ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+       ) AS moving_average
+FROM sales;
+```
+### Moving Average screenshot
+![Moving Average](public/moving_average.png)
 
 ## Results Analysis
 
 ### Descriptive
-Sales performance varies across products and customers, with a small number of products contributing to most of the total sales revenue.
+Sales records show that revenue is not evenly distributed across all products and customers. A few products generate most of the sales, and some customers purchase more frequently than others.
 
 ### Diagnostic
-Higher revenue concentration is mainly driven by repeat purchases from certain customers and consistent sales of specific product categories.
+This pattern occurs because certain products are consistently purchased across multiple regions, and a small group of loyal customers contributes significantly to total sales revenue.
 
 ### Prescriptive
-The business should focus on retaining high-value customers, promoting top-selling products, and improving marketing strategies for low-performing products.
+The business should prioritize stocking and promoting high  performing products, build loyalty programs for repeat customers, and review pricing or promotion strategies for low selling products.
 
 ---
 
@@ -180,4 +194,4 @@ SQL Window Functions Documentation
 ---
 
 ## Integrity Statement
-All sources were properly cited. Implementations and analysis represent original work. No AI-generated content was copied without attribution or adaptation.
+All sources were properly cited. Implementations and analysis represent original work. No AI generated content was copied without attribution or adaptation.
