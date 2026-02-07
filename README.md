@@ -1,4 +1,9 @@
 # SQL JOINs & Window Functions Project
+Course: INSY 8311 Database Development with PL/SQL
+Student: Kajyojyi ntwari david
+Group A
+Instructor: Eric Maniraguha
+
 ## 1. Problem Definition
 
 ### Business Context
@@ -173,6 +178,7 @@ FROM sales;
 ```
 ### Moving Average screenshot
 ![Moving Average](public/moving_average.png)
+
 
 ## Results Analysis
 
